@@ -1,5 +1,9 @@
 package com.companyname.vending_machine.model.dto;
 
-public class ImportVendingMachineConfigDTO {
+import lombok.Data;
 
+@Data
+public class ImportVendingMachineConfigDTO {
+    private Long rows;
+    private String columns;
 }
