@@ -30,4 +30,9 @@ public class VendingMachineItem {
     public int hashCode() {
         return Objects.hash(name, amount, price);
     }
+    
+    public VendingMachineItem buyOne() {
+        amount--;
+        return this;
+    }
 }
