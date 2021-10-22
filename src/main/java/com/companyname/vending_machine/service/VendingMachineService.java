@@ -93,7 +93,7 @@ public class VendingMachineService {
     }
     
     private void checkWalletAmountEnough(VendingMachineItem item) {
-        if (item.getAmount() <= 0 && item.getPrice() > walletRepo.getFirst().getAmount()) {
+        if (item.getAmount() <= 0 || item.getPrice() > walletRepo.getFirst().getAmount()) {
             throw new IllegalArgumentException();
         }
     }
