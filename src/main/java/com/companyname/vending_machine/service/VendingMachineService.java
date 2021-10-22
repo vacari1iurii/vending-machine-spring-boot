@@ -55,12 +55,14 @@ public class VendingMachineService {
     }
        
     @Transactional
-    public void buy(BuyRequestDTO requestDTO) {
+    public String buy(BuyRequestDTO requestDTO) {
         VendingMachineCell cell = cellRepo.findByRowAndColumn(requestDTO.getRow(), requestDTO.getColumn());
         checkRequestValue(cell);
         checkWalletAmountEnough(cell.getItem());
         buyItem(cell.getItem());
         
+        String balance = String.format("$%d.%d", walletRepo.getFirst().getAmount() / 100, walletRepo.getFirst().getAmount() % 100);
+        return String.format("Purchase completed successfully. Your balance is %s.", balance);
     }
       
     private void checkRequestValue(VendingMachineCell cell) {
@@ -72,8 +74,11 @@ public class VendingMachineService {
     
     private void checkWalletAmountEnough(VendingMachineItem item) {
         if (item.getAmount() <= 0 || item.getPrice() > walletRepo.getFirst().getAmount()) {
-            throw new IllegalArgumentException("Insufficient funds to purchase selected item. "
-                    + "Please add more funds or choose another item.");
+            String itemCost = String.format("$%d.%d", item.getPrice() / 100, item.getPrice() % 100);
+            String balance = String.format("$%d.%d", walletRepo.getFirst().getAmount() / 100, walletRepo.getFirst().getAmount() % 100);
+            throw new IllegalArgumentException(String.format("Insufficient funds to purchase selected item. "
+                    + "Selected item's cost is %s, but your balance is %s. Please add more funds or choose another item.", 
+                    itemCost, balance));
         }
     }
     
