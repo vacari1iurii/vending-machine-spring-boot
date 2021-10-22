@@ -28,7 +28,8 @@ public class BuyerController {
     }
 
     @PostMapping("/buy")
-    public void buy(@RequestBody BuyRequestDTO requestDTO) {
-        service.buy(requestDTO);
+    public ResponseEntity<String> buy(@RequestBody BuyRequestDTO requestDTO) {
+        String result = service.buy(requestDTO);
+        return ResponseEntity.ok(result);
     }
 }
