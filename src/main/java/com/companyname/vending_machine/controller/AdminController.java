@@ -1,6 +1,7 @@
 package com.companyname.vending_machine.controller;
 
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.companyname.vending_machine.model.dto.ImportDataDTO;
 import com.companyname.vending_machine.service.VendingMachineService;
+ 
 
 @RestController
 @RequestMapping("/api/admin")
@@ -19,9 +21,9 @@ public class AdminController {
         this.service = service;
     }
 
-    @PostMapping("/")
-    public ResponseEntity.BodyBuilder importDataForVendingMachine(@RequestBody ImportDataDTO importData) {
+    @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ImportDataDTO> importDataForVendingMachine(@RequestBody ImportDataDTO importData) {
         service.save(importData);
-        return ResponseEntity.ok();
+        return ResponseEntity.ok(importData);
     }
 }
