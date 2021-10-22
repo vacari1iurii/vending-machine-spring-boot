@@ -31,32 +31,9 @@ public class VendingMachineService {
 
     @Transactional
     public void save(ImportDataDTO importData) {
-        List<VendingMachineItem> savedItems = new ArrayList<>();
+        List<VendingMachineItem> items = getItemsFromImportDataDTO(importData);
 
-        for (VendingMachineItemDTO itemDTO : importData.getItems()) {
-            VendingMachineItem item = new VendingMachineItem();
-            item.setAmount(itemDTO.getAmount());
-            item.setName(itemDTO.getName());
-            item.setPrice(Long.parseLong(itemDTO.getPrice().replaceAll("\\$","").replaceAll("\\.", "")));
-
-            savedItems.add(itemRepo.save(item));
-        }
-
-        for (long i = 0; i < importData.getConfig().getRows(); i++) {
-            for (long j = 1; j <= Long.parseLong(importData.getConfig().getColumns()); j++) {
-                VendingMachineCell cell = new VendingMachineCell();
-
-                cell.setRow(String.valueOf((char)('A' + i)));
-                cell.setColumn(j);
-
-                if(!savedItems.isEmpty()) {
-                    cell.setItem(savedItems.get(0));
-                    savedItems.remove(0);
-                }
-
-                cellRepo.save(cell);
-            }
-        }
+        putItemsIntoVendingMachine(importData, items);
     }
 
     public List<ResponseVendingMachineItemDTO> getAllItems() {
@@ -86,7 +63,7 @@ public class VendingMachineService {
         
     }
       
-    private void checkRequestValue(VendingMachineCell cell) throws IllegalArgumentException {
+    private void checkRequestValue(VendingMachineCell cell) {
         if (cell == null || cell.getItem() == null || cell.getItem().getAmount() == 0) {
             throw new IllegalArgumentException();
         } 
@@ -101,5 +78,38 @@ public class VendingMachineService {
     private void buyItem(VendingMachineItem item) {
         itemRepo.save(item.buyOne());
         walletRepo.save(walletRepo.getFirst().substractPrice(item.getPrice()));    
+    }
+    
+    private List<VendingMachineItem> getItemsFromImportDataDTO(ImportDataDTO importData) {
+        List<VendingMachineItem> items = new ArrayList<>();
+        
+        for (VendingMachineItemDTO itemDTO : importData.getItems()) {
+            VendingMachineItem item = new VendingMachineItem();
+            item.setAmount(itemDTO.getAmount());
+            item.setName(itemDTO.getName());
+            item.setPrice(Long.parseLong(itemDTO.getPrice().replaceAll("\\$","").replaceAll("\\.", "")));
+
+            items.add(itemRepo.save(item));
+        }
+        
+        return items;
+    }
+    
+    private void putItemsIntoVendingMachine(ImportDataDTO importData, List<VendingMachineItem> items) {
+        for (long i = 0; i < importData.getConfig().getRows(); i++) {
+            for (long j = 1; j <= Long.parseLong(importData.getConfig().getColumns()); j++) {
+                VendingMachineCell cell = new VendingMachineCell();
+
+                cell.setRow(String.valueOf((char)('A' + i)));
+                cell.setColumn(j);
+
+                if(!items.isEmpty()) {
+                    cell.setItem(items.get(0));
+                    items.remove(0);
+                }
+
+                cellRepo.save(cell);
+            }
+        }  
     }
 }
