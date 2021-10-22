@@ -65,13 +65,15 @@ public class VendingMachineService {
       
     private void checkRequestValue(VendingMachineCell cell) {
         if (cell == null || cell.getItem() == null || cell.getItem().getAmount() == 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("The selected position does not exist or it is empty. "
+                    + "Please check and select once again.");
         } 
     }
     
     private void checkWalletAmountEnough(VendingMachineItem item) {
         if (item.getAmount() <= 0 || item.getPrice() > walletRepo.getFirst().getAmount()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Insufficient funds to purchase selected item. "
+                    + "Please add more funds or choose another item.");
         }
     }
     
