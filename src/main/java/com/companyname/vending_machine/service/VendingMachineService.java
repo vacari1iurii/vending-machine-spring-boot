@@ -10,6 +10,7 @@ import com.companyname.vending_machine.model.VendingMachineCell;
 import com.companyname.vending_machine.model.VendingMachineItem;
 import com.companyname.vending_machine.model.dto.BuyRequestDTO;
 import com.companyname.vending_machine.model.dto.ImportDataDTO;
+import com.companyname.vending_machine.model.dto.ResponseBuyDTO;
 import com.companyname.vending_machine.model.dto.ResponseVendingMachineItemDTO;
 import com.companyname.vending_machine.model.dto.VendingMachineItemDTO;
 import com.companyname.vending_machine.repository.VendingMachineCellRepository;
@@ -55,14 +56,16 @@ public class VendingMachineService {
     }
        
     @Transactional
-    public String buy(BuyRequestDTO requestDTO) {
+    public ResponseBuyDTO buy(BuyRequestDTO requestDTO) {
+        ResponseBuyDTO dto = new ResponseBuyDTO();
         VendingMachineCell cell = cellRepo.findByRowAndColumn(requestDTO.getRow(), requestDTO.getColumn());
         checkRequestValue(cell);
         checkWalletAmountEnough(cell.getItem());
         buyItem(cell.getItem());
         
-        String balance = String.format("$%d.%d", walletRepo.getFirst().getAmount() / 100, walletRepo.getFirst().getAmount() % 100);
-        return String.format("Purchase completed successfully. Your balance is %s.", balance);
+        dto.setBalance(String.format("$%d.%d", walletRepo.getFirst().getAmount() / 100, walletRepo.getFirst().getAmount() % 100));
+        dto.setRemainingAmount(cell.getItem().getAmount());
+        return dto;
     }
       
     private void checkRequestValue(VendingMachineCell cell) {
