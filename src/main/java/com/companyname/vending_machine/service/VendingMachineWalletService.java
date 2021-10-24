@@ -16,6 +16,10 @@ public class VendingMachineWalletService {
     }
 
     public void save(MoneyAmountDTO moneyAmountDTO) {
+        if (moneyAmountDTO.getAmount() <= 0) {
+            throw new IllegalArgumentException("You can't add an amount that is less than or equal to zero");
+        }
+        
         VendingMachineWallet wallet = walletRepo.getFirst();
         wallet.setAmount(wallet.getAmount() + moneyAmountDTO.getAmount());
         walletRepo.save(wallet);
