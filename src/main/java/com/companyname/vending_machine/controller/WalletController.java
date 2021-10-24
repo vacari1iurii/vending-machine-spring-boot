@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.companyname.vending_machine.model.dto.MoneyAmountDTO;
 import com.companyname.vending_machine.service.VendingMachineWalletService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping("/api/wallet")
+@Slf4j
 public class WalletController {
     VendingMachineWalletService service;
 
@@ -19,11 +22,13 @@ public class WalletController {
 
     @PostMapping("/add")
     public void addMoney(MoneyAmountDTO moneyAmountDTO) {
+        log.debug("WalletController.addMoney is called.");
         service.save(moneyAmountDTO);
     }
     
     @PostMapping("/getChange")
     public ResponseEntity<Long> getChange() {
+        log.debug("WalletController.getChange is called.");
         return ResponseEntity.ok(service.returnChange());
     }
 }
