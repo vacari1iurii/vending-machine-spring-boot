@@ -18,7 +18,9 @@ To solve this problem, I used the following libraries and frameworks:
 
 **Lombok** - is a plugin that allows you to reduce the amount of boilerplate code (setters, getters, constructors, etc.)
 
-**Spring boot starter test** - required for testing (which I didn't done due lack of time :))
+**Spring boot starter test** - required for testing (includes JUnit, Mockito, etc.)
+
+**H2 Database** - in-memory database which is used for tests.
 
 # Executing Instructions
 
@@ -64,4 +66,4 @@ Before running the application, we need to create a PostgreSQL database called "
 
 **getAll** - shows the list of products, their quantity, unit price, location.
 
-**buy**- buys the selected product, according to the specified row and column.
+**buy**- buys the selected product, according to the specified row and column (row is case-sensitive, so make sure you are writing it in upper-case).
